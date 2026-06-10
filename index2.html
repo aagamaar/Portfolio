@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Aagama | Security · Networks · Python</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none;
+    }
+
+    body {
+      background: #0a0c10;
+      font-family: 'JetBrains Mono', monospace;
+      color: #e0e0e0;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* custom cursor glow */
+    .cursor-glow {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(0, 255, 100, 0.4);
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      transition: transform 0.08s linear;
+      mix-blend-mode: screen;
+      box-shadow: 0 0 12px #00ff66;
+    }
+
+    /* matrix background canvas */
+    #matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 2rem 4rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* glitch text */
+    .glitch {
+      font-size: 3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      position: relative;
+      text-shadow: 0.05em 0 0 rgba(255,0,0,0.4), -0.05em -0.025em 0 rgba(0,255,0,0.3);
+      animation: glitch-shake 0.3s infinite alternate;
+      margin-bottom: 0.5rem;
+    }
+    @keyframes glitch-shake {
+      0% { transform: translate(0); }
+      100% { transform: translate(-1px, 1px); }
+    }
+
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      margin: 3rem 0 3rem;
+    }
+    .hero-left {
+      flex: 2;
+    }
+    .hero-right {
+      flex: 1;
+      text-align: center;
+    }
+    .hero-right img {
+      max-width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #00ff6633;
+      border: 1px solid #2ecc71;
+    }
+    .tagline {
+      font-size: 1.2rem;
+      color: #8bc34a;
+      margin: 1rem 0;
+    }
+    .typed-text {
+      font-size: 1.5rem;
+      border-right: 2px solid #0f0;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation: typing 3s steps(40, end) forwards, blink-caret 0.75s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink-caret {
+      50% { border-color: transparent; }
+    }
+
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 1.5rem 0;
+    }
+    .badge {
+      background: #1e2229;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: #0f0;
+      border: 1px solid #2ecc71;
+    }
+
+    /* cards */
+    .card {
+      background: #11151c;
+      border: 1px solid #2c3e2f;
+      border-radius: 24px;
+      padding: 1.6rem;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(2px);
+    }
+    .card:hover {
+      border-color: #2ecc71;
+      box-shadow: 0 8px 20px rgba(46,204,113,0.2);
+      transform: translateY(-4px);
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      margin: 2.5rem 0 1.5rem;
+      border-left: 4px solid #2ecc71;
+      padding-left: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .projects-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      margin-top: 1rem;
+    }
+    .project-card {
+      background: #0f131a;
+      border: 1px solid #2a2f3a;
+      border-radius: 20px;
+      padding: 1.5rem;
+      flex: 1 1 280px;
+      transition: 0.2s;
+    }
+    .project-card:hover {
+      border-color: #2ecc71;
+      box-shadow: 0 0 12px #2ecc7144;
+    }
+    .stack {
+      font-family: monospace;
+      background: #1a1f2a;
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 16px;
+      font-size: 0.7rem;
+      color: #8bc34a;
+      margin: 0.8rem 0;
+    }
+
+    .learning-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      margin: 2rem 0;
+    }
+    .learning-box {
+      flex: 1;
+      background: #0d1117;
+      border-radius: 20px;
+      padding: 1.2rem;
+      border-left: 3px solid #2ecc71;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      margin-bottom: 0.4rem;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    li::before {
+      content: ">";
+      position: absolute;
+      left: 0;
+      color: #2ecc71;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin: 2rem 0;
+    }
+    .footer-links a {
+      color: #b0b0b0;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.2s;
+    }
+    .footer-links a:hover {
+      color: #2ecc71;
+      text-shadow: 0 0 4px #2ecc71;
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: #2ecc7133;
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 700px) {
+      .glitch { font-size: 2rem; }
+      .container { padding: 1.5rem; }
+      .hero { margin-top: 1rem; }
+      .typed-text { font-size: 1rem; white-space: normal; word-break: keep-all; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix-bg"></canvas>
+<div class="cursor-glow"></div>
+
+<div class="container">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="glitch">AAGAMA // AR</div>
+      <div class="tagline">
+        🐍 Real‑World Python<br>
+        🔐 Networks & Cryptography
+      </div>
+      <div class="typed-text" id="typed"></div>
+      <div class="badge-container">
+        <span class="badge">#BuildInPublic</span>
+        <span class="badge">Attendance Bot v2</span>
+        <span class="badge">BloodSync</span>
+        <span class="badge">IIIT Kottayam</span>
+      </div>
+    </div>
+<!-- Two GIFs Section -->
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin: 4rem 0;">
+  <!-- GIF 1: Typing hands -->
+  <div style="text-align: center; max-width: 300px;">
+    <img src="https://media.tenor.com/f440ySfSBfQAAAAM/takane-lui-hacker-man.gif" alt="Typing hands" style="width: 100%; border-radius: 16px; border: 1px solid #2ecc71; box-shadow: 0 0 15px #2ecc7144;">
+    <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #8bc34a;">⚡ Fast fingers, real code</p>
+  </div>
+  <!-- GIF 2: You can replace this with any other GIF (matrix, network, hacker, etc.) -->
+  <div style="text-align: center; max-width: 300px;">
+    <img src="https://media.tenor.com/b0kfKMMS9esAAAAM/risa-matoba-idolmaster-cinderella-girls-u149.gif" alt="Coding animation" style="width: 100%; border-radius: 16px; border: 1px solid #2ecc71; box-shadow: 0 0 15px #2ecc7144;">
+    <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #8bc34a;">🧠 Building in public</p>
+  </div>
+</div>
+
+  </div>
+
+
+  <!-- Current section -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <h3>🎓 Current Internship</h3>
+    <p><strong>Skill Development cum Internship Program</strong><br>
+    Computer Networks & Information Security · IIIT Kottayam</p>
+    <hr style="margin: 1rem 0;">
+    <p><strong>🐍 What I Love Doing</strong><br>
+    Building real-world Python projects that solve actual problems.<br>
+    No tutorials, no to-do apps — just tools people actually use: attendance bots, automation, computer vision.</p>
+    <p>🔭 <strong>Current Focus:</strong> Team Attendance Bot v2 — Multi-tenant Telegram bot for small teams.</p>
+  </div>
+
+
+
+  <!-- Projects -->
+  <h2 class="section-title"><span>🏆</span> Projects I'm Proud Of</h2>
+  <div class="projects-grid">
+    <div class="project-card">
+      <h3>🩸 BloodSync</h3>
+      <div class="stack">Java · Swing · MySQL · MVC</div>
+      <p>Blood donation management system connecting donors, patients, admins. Real-time donor search by blood group & location, request tracking, admin dashboard.</p>
+      <a href="https://github.com/aagamaar/Blood_Sync" target="_blank" style="color:#2ecc71;">🔗 GitHub →</a>
+    </div>
+    <div class="project-card">
+      <h3>📊 Team Attendance Bot (v1)</h3>
+      <div class="stack">Python · Telegram API · SQLite</div>
+      <p>Single-file MVP replacing daily WhatsApp polls. Self-initializing schema, double-marking prevention, CSV export.</p>
+      <a href="https://github.com/aagamaar/Team_Attendance_Bot" target="_blank" style="color:#2ecc71;">🔗 GitHub →</a>
+    </div>
+    <div class="project-card">
+      <h3>⚡ Team Attendance Bot (v2)</h3>
+      <div class="stack">Python · Telegram API · SQLite · Flask</div>
+      <p>Production-ready multi-tenant rewrite: org isolation, role-based access, monthly leave tracking, CSV reports.</p>
+      <a href="https://github.com/aagamaar/Team_Attendance_Bot_v2" target="_blank" style="color:#2ecc71;">🔗 GitHub →</a>
+    </div>
+  </div>
+  <div style="text-align: center; margin: 1rem 0 2rem; font-size: 0.85rem; opacity: 0.7;">
+    💡 Every project has a messy debugging story — built in public, failures included.
+  </div>
+
+  <!-- Learning -->
+  <h2 class="section-title"><span>📚</span> Currently Learning</h2>
+  <div class="learning-flex">
+    <div class="learning-box">
+      <h3>🌐 Computer Networks</h3>
+      <ul><li>OSI & TCP/IP layers, devices</li><li>IP addressing, routing protocols</li></ul>
+    </div>
+    <div class="learning-box">
+      <h3>🔐 Cryptography</h3>
+      <ul><li>CIA triad, number theory, RSA, DES</li><li>Classical ciphers, Elgamal, digital signatures</li></ul>
+    </div>
+    <div class="learning-box">
+      <h3>⛓️ Blockchain + AI Security</h3>
+      <ul><li>Bitcoin, Ethereum, smart contracts</li><li>Threat detection, NLP for phishing</li></ul>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <h2 class="section-title"><span>🛠️</span> Tech Arsenal</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; margin: 1rem 0 2rem;">
+    <span class="badge">Python</span><span class="badge">Java</span><span class="badge">MySQL</span>
+    <span class="badge">SQLite</span><span class="badge">OpenCV</span><span class="badge">Streamlit</span>
+    <span class="badge">Git</span><span class="badge">Linux</span>
+  </div>
+
+  <hr>
+
+  <!-- Footer -->
+  <div style="text-align: center;">
+    <div class="footer-links">
+      <a href="https://dev.to/aagama_ar" target="_blank">DEV.to</a>
+      <a href="https://twitter.com/aagamaar" target="_blank">Twitter</a>
+      <a href="https://linkedin.com/in/aagamaar" target="_blank">LinkedIn</a>
+      <a href="https://medium.com/@aagamaar01" target="_blank">Medium</a>
+      <a href="https://github.com/aagamaar" target="_blank">GitHub</a>
+    </div>
+    <!-- Better bottom GIF: coding cat or neural network -->
+    <div style="margin: 2rem 0 1rem;">
+      <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGc5NHN1c2Ixb3kxdTdpeW9pZTVuZTNoNWp1dDlscDE5YnA1cDMyZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26tn33aiTi1jkl6H6/giphy.gif" width="100" style="border-radius: 12px;">
+    </div>
+    <p style="font-size: 0.8rem;">⚡ "No tutorials. No to-do apps. Just real Python projects that solve real problems."</p>
+    <p style="font-size: 0.8rem;">🏗️ Building in public · Failing in public · Shipping anyway.</p>
+  </div>
+</div>
+
+<script>
+  // Typed effect with proper case
+  const typedEl = document.getElementById('typed');
+  const phrases = ['Python · Builder', 'Networks & Crypto', 'Attendance Bot v2', 'Building In Public'];
+  let idx = 0;
+  let charIdx = 0;
+  let isDeleting = false;
+
+  function typeEffect() {
+    const current = phrases[idx];
+    if (isDeleting) {
+      typedEl.textContent = current.substring(0, charIdx-1);
+      charIdx--;
+      if (charIdx === 0) {
+        isDeleting = false;
+        idx = (idx+1) % phrases.length;
+      }
+    } else {
+      typedEl.textContent = current.substring(0, charIdx+1);
+      charIdx++;
+      if (charIdx === current.length) {
+        isDeleting = true;
+        setTimeout(() => {}, 1500);
+      }
+    }
+    setTimeout(typeEffect, isDeleting ? 80 : 120);
+  }
+  typeEffect();
+
+  // Custom cursor
+  const cursor = document.querySelector('.cursor-glow');
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX - 12 + 'px';
+    cursor.style.top = e.clientY - 12 + 'px';
+  });
+
+  // Matrix background canvas
+  const canvas = document.getElementById('matrix-bg');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const chars = '01アイウエオカキクケコABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const fontSize = 16;
+  const columns = canvas.width / fontSize;
+  const drops = [];
+  for (let i = 0; i < columns; i++) drops[i] = 1;
+
+  function drawMatrix() {
+    ctx.fillStyle = 'rgba(10, 12, 16, 0.04)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0f0';
+    ctx.font = fontSize + 'px monospace';
+    for (let i = 0; i < drops.length; i++) {
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+  setInterval(drawMatrix, 50);
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
+</body>
+</html>
